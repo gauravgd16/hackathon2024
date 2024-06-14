@@ -21,15 +21,11 @@ st.markdown(
     }
     
     .st-emotion-cache-jmw8un {
-        width: 1.8rem;
-        height: 1.5rem;
         background-color: rgb(9, 171, 59);
         
     }
     
     .st-emotion-cache-4zpzjl{
-        width: 1.8rem;
-        height: 1.5rem;
         background-color: rgb(252, 175, 69);
         
     }
