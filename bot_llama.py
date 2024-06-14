@@ -13,13 +13,13 @@ st.markdown(
         flex-direction: row-reverse;
         text-align: right;
     }
-    .st-emotion-cache-jmw8un {
+    .st-emotion-cache-jmw8un .st-emotion-cache-bho8sy .eeusbqq1 {
         width: 1.8rem;
         height: 1.5rem;
         background-color: rgb(9, 171, 59);
         
     }
-    .st-emotion-cache-4zpzjl{
+    .st-emotion-cache-4zpzjl .st-emotion-cache-1ghhuty .eeusbqq1 {
         width: 1.8rem;
         height: 1.5rem;
         background-color: rgb(252, 175, 69);
