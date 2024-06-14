@@ -13,6 +13,11 @@ st.markdown(
         flex-direction: row-reverse;
         text-align: right;
     }
+    .stChatMessage.st-emotion-cache-1c7y2kd.eeusbqq4[data-testid="stChatMessage"]{
+        flex-direction: row-reverse;
+        text-align: right;
+    
+    }
     .st-emotion-cache-jmw8un {
         width: 1.8rem;
         height: 1.5rem;
