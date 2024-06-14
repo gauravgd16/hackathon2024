@@ -41,7 +41,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "You are a Mental Health expert ChatBot at SAP.Help the employees to get the right information and support.Give information about SAP's Mental Health & Well Being Program."}]
+    st.session_state["messages"] = [{"role": "assistant", "content": "You are a Mental Health and Well Being expert ChatBot.Help the employees at SAP to get the right information and support.Also try to give them General information about mental wellbeing with empathy and care. Give information about SAP's Mental Health & Well Being Program if and only if needed"}]
 st.chat_message("assistant").write("Mental Health Chatbot is here to help you. How can I assist you today?")
 for msg in st.session_state.messages[1:]:
     st.chat_message(msg["role"]).write(msg["content"])
