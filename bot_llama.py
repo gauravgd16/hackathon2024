@@ -9,7 +9,7 @@ st.title("SAP's AI-Driven Mental Health & Well Being Chatbot 🤖")
 st.markdown(
     """
 <style>
-    [aria-label="Chat message from user"] {
+    .st-emotion-cache-janbn0 .st-emotion-cache-1c7y2kd {
         flex-direction: row-reverse;
         text-align: right;
     }
