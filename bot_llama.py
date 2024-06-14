@@ -9,9 +9,7 @@ st.title("SAP's AI-Driven Mental Health & Well Being Chatbot 🤖")
 st.markdown(
     """
 <style>
-    #GithubIcon {
-      visibility: hidden;
-    }
+    
     .st-emotion-cache-janbn0 {
         flex-direction: row-reverse;
         text-align: right;
@@ -31,6 +29,11 @@ st.markdown(
     .st-emotion-cache-4zpzjl{
         background-color: rgb(252, 175, 69);
         
+    }
+
+    [data-testid="stToolbar"].st-emotion-cache-15ecox0.ezrtsby0 {
+    display: none;
+    
     }
 </style>
 """,
