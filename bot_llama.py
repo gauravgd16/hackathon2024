@@ -3,18 +3,6 @@ import streamlit as st
 import json
 from streamlit_chat import message
 
-with open("irpa-r998-genaixl-hackathon-sk.json", "r") as key_file:
-    svcKey = json.load(key_file)
-
-env_vars = {
-    "AICORE_AUTH_URL": svcKey["url"],
-    "AICORE_CLIENT_ID": svcKey["clientid"],
-    "AICORE_CLIENT_SECRET": svcKey["clientsecret"],
-    "AICORE_RESOURCE_GROUP": svcKey["identityzoneid"],
-    "AICORE_BASE_URL": svcKey["serviceurls"]["AI_API_URL"]
-}
-
-os.environ.update(env_vars)
 
 from gen_ai_hub.proxy.native.openai import chat
 
@@ -66,10 +54,6 @@ for msg in st.session_state.messages[1:]:
     message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
 
 if prompt := st.chat_input():
-    for var in env_vars.keys():
-        if is_env_var_empty(var):
-            st.info("Please add your AICORE API key to continue.")
-            st.stop()
 
     st.session_state.messages.append({"role": "user", "content": prompt})
     message(prompt, is_user=True, avatar_style="avataaars", seed=123)
