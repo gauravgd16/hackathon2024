@@ -1,14 +1,9 @@
 import os
 import streamlit as st
-import json
+from groq import Groq
 from streamlit_chat import message
 
-
-from gen_ai_hub.proxy.native.openai import chat
-
-def is_env_var_empty(var_name):
-    value = os.environ.get(var_name)
-    return value is None or value == ''
+groq_api_key=os.environ.get("GROQ_API_KEY")
 
 st.set_page_config(
     page_title="SAP's Mental Health 24×7 Chatbot", 
@@ -54,12 +49,14 @@ for msg in st.session_state.messages[1:]:
     message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
 
 if prompt := st.chat_input():
-
+    if not groq_api_key:
+        st.info("Please add your Groq Cloud API key to continue.")
+        st.stop()
+    
     st.session_state.messages.append({"role": "user", "content": prompt})
     message(prompt, is_user=True, avatar_style="avataaars", seed=123)
-
-    kwargs = dict(deployment_id='d8a0f8399ad38d62', messages=st.session_state.messages)
-    response = chat.completions.create(**kwargs)
+    client = Groq(api_key=groq_api_key)
+    response = client.chat.completions.create(model="llama3-70b-8192", messages=st.session_state.messages)
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
     message(msg, is_user=False, avatar_style="bottts", seed=123)
