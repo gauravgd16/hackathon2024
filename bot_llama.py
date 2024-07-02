@@ -54,9 +54,9 @@ if prompt := st.chat_input():
         st.stop()
     
     st.session_state.messages.append({"role": "user", "content": prompt})
-    message(prompt, is_user=True, avatar_style="avataaars", seed=123)
+    message(prompt, is_user=True, avatar_style="avataaars", seed=123,key=f"user_message_{len(st.session_state.messages)}")
     client = Groq(api_key=groq_api_key)
     response = client.chat.completions.create(model="llama3-70b-8192", messages=st.session_state.messages)
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
-    message(msg, is_user=False, avatar_style="bottts", seed=123)
+    message(msg, is_user=False, avatar_style="bottts", seed=123,key=f"assistant_message_{len(st.session_state.messages)}")
