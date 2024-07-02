@@ -1,60 +1,81 @@
 import os
-from groq import Groq
 import streamlit as st
+import json
+from streamlit_chat import message
+
+with open("irpa-r998-genaixl-hackathon-sk.json", "r") as key_file:
+    svcKey = json.load(key_file)
+
+env_vars = {
+    "AICORE_AUTH_URL": svcKey["url"],
+    "AICORE_CLIENT_ID": svcKey["clientid"],
+    "AICORE_CLIENT_SECRET": svcKey["clientsecret"],
+    "AICORE_RESOURCE_GROUP": svcKey["identityzoneid"],
+    "AICORE_BASE_URL": svcKey["serviceurls"]["AI_API_URL"]
+}
+
+os.environ.update(env_vars)
+
+from gen_ai_hub.proxy.native.openai import chat
+
+def is_env_var_empty(var_name):
+    value = os.environ.get(var_name)
+    return value is None or value == ''
+
 st.set_page_config(
     page_title="SAP's Mental Health 24×7 Chatbot", 
-    page_icon="💬")
-groq_api_key=os.environ.get("GROQ_API_KEY")
-st.title("SAP's AI-Driven Mental Health & Well Being Chatbot 🤖")
+    page_icon="💬"
+)
+st.title(":blue[SAP's AI-Driven Mental Health & Well Being Chatbot 🤖]")
+
 st.markdown(
     """
-<style>
-    
-    .st-emotion-cache-janbn0 {
-        flex-direction: row-reverse;
-        text-align: right;
-    }
-
-    .stChatMessage.st-emotion-cache-1c7y2kd.eeusbqq4[data-testid="stChatMessage"]{
-        flex-direction: row-reverse;
-        text-align: right;
-    
-    }
-    
-    .st-emotion-cache-jmw8un {
-        background-color: rgb(9, 171, 59);
+    <style>
+        .st-emotion-cache-janbn0 {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        .stChatMessage.st-emotion-cache-1c7y2kd.eeusbqq4[data-testid="stChatMessage"]{
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        .st-emotion-cache-jmw8un {
+            background-color: rgb(0, 107, 184);
+        }
+        .st-emotion-cache-4zpzjl{
+            background-color: rgb(255, 202, 75);
+        }
+        [data-testid="stToolbar"].st-emotion-cache-15ecox0.ezrtsby0 {
+            display: none;
+        }
+        [data-testid="stChatMessageContent"] p{
+        font-family: 'Arial', sans-serif;
+        }
         
-    }
-    
-    .st-emotion-cache-4zpzjl{
-        background-color: rgb(252, 175, 69);
-        
-    }
-
-    [data-testid="stToolbar"].st-emotion-cache-15ecox0.ezrtsby0 {
-    display: none;
-    
-    }
-
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True,
 )
+
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "You are a Mental Health and Well Being expert ChatBot.Help the employees at SAP to get the right information and support.Also try to give them General information about mental wellbeing with empathy and care. Give information about SAP's Mental Health & Well Being Program if and only if needed"}]
-st.chat_message("assistant").write("Mental Health Chatbot is here to help you. How can I assist you today?")
+    st.session_state["messages"] = [{"role": "assistant", "content": "You are a compassionate and knowledgeable Mental Health and Wellbeing expert ChatBot of SAP company, dedicated to supporting employees at SAP. Your role involves providing accurate information and empathetic support concerning mental health and general wellbeing. Offer helpful advice, resources, and coping strategies with a focus on care and understanding. Share information about SAP's Mental Health & Wellbeing Program when relevant or upon request, ensuring the employee receives the best possible support tailored to their needs."}]
+
+message("SAP's Mental Health Chatbot is here to help you. How can I assist you today?", is_user=False, avatar_style="bottts", seed=123)
+
 for msg in st.session_state.messages[1:]:
-    st.chat_message(msg["role"]).write(msg["content"])
+    message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
 
 if prompt := st.chat_input():
-    if not groq_api_key:
-        st.info("Please add your Groq Cloud API key to continue.")
-        st.stop()
+    for var in env_vars.keys():
+        if is_env_var_empty(var):
+            st.info("Please add your AICORE API key to continue.")
+            st.stop()
 
-    client = Groq(api_key=groq_api_key)
     st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message("user").write(prompt)
-    response = client.chat.completions.create(model="llama3-70b-8192", messages=st.session_state.messages)
+    message(prompt, is_user=True, avatar_style="avataaars", seed=123)
+
+    kwargs = dict(deployment_id='d8a0f8399ad38d62', messages=st.session_state.messages)
+    response = chat.completions.create(**kwargs)
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
-    st.chat_message("assistant").write(msg)
+    message(msg, is_user=False, avatar_style="bottts", seed=123)
