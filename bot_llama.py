@@ -4,7 +4,6 @@ from groq import Groq
 from streamlit_chat import message
 
 groq_api_key=os.environ.get("GROQ_API_KEY")
-count=1
 
 st.set_page_config(
     page_title="SAP's Mental Health 24×7 Chatbot", 
@@ -46,12 +45,9 @@ if "messages" not in st.session_state:
 
 message("SAP's Mental Health Chatbot is here to help you. How can I assist you today?", is_user=False, avatar_style="bottts", seed=123)
 
-for count, msg in enumerate(st.session_state.messages, start=1):
-    role = msg["role"]
-    key = f"{role}_message_{count}"
-    avatar_style = "avataaars" if role == "user" else "bottts"
-    message(msg["content"], is_user=(role == "user"), avatar_style=avatar_style, seed=123, key=key)
-    count+=1
+for msg in st.session_state.messages[1:]:
+    message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
+
 if prompt := st.chat_input():
     if not groq_api_key:
         st.info("Please add your Groq Cloud API key to continue.")
@@ -64,4 +60,3 @@ if prompt := st.chat_input():
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
     message(msg, is_user=False, avatar_style="bottts", seed=123)
-    
