@@ -4,6 +4,7 @@ from groq import Groq
 from streamlit_chat import message
 
 groq_api_key=os.environ.get("GROQ_API_KEY")
+count=1
 
 st.set_page_config(
     page_title="SAP's Mental Health 24×7 Chatbot", 
@@ -45,18 +46,22 @@ if "messages" not in st.session_state:
 
 message("SAP's Mental Health Chatbot is here to help you. How can I assist you today?", is_user=False, avatar_style="bottts", seed=123)
 
-for msg in st.session_state.messages[1:]:
-    message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
-
+for count, msg in enumerate(st.session_state.messages[1:], start=1):
+    role = msg["role"]
+    key = f"{role}_message_{count}"
+    avatar_style = "avataaars" if role == "user" else "bottts"
+    message(msg["content"], is_user=(role == "user"), avatar_style=avatar_style, seed=123, key=key)
+    count+=1
 if prompt := st.chat_input():
     if not groq_api_key:
         st.info("Please add your Groq Cloud API key to continue.")
         st.stop()
     
     st.session_state.messages.append({"role": "user", "content": prompt})
-    message(prompt, is_user=True, avatar_style="avataaars", seed=123)
+    message(prompt, is_user=True, avatar_style="avataaars", seed=123,key=f"user_message_{count}")
     client = Groq(api_key=groq_api_key)
     response = client.chat.completions.create(model="llama3-70b-8192", messages=st.session_state.messages)
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
-    message(msg, is_user=False, avatar_style="bottts", seed=123)
+    message(msg, is_user=False, avatar_style="bottts", seed=123,key=f"assistant_message_{count}")
+    
