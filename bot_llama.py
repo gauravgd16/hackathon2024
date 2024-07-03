@@ -42,7 +42,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
+def get_key():
+    return ''.join(random.choices(string.ascii_uppercase +string.digits, k=15))
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "You are a compassionate and knowledgeable Mental Health and Wellbeing expert ChatBot of SAP company, dedicated to supporting employees at SAP. Your role involves providing accurate information and empathetic support concerning mental health and general wellbeing. Offer helpful advice, resources, and coping strategies with a focus on care and understanding. Share information about SAP's Mental Health & Wellbeing Program when relevant or upon request, ensuring the employee receives the best possible support tailored to their needs."}]
@@ -50,14 +51,14 @@ if "messages" not in st.session_state:
 message("SAP's Mental Health Chatbot is here to help you. How can I assist you today?", is_user=False, avatar_style="bottts", seed=123)
 
 for msg in st.session_state.messages[1:]:
-    # key = ''.join(random.choices(string.ascii_uppercase +string.digits, k=10))
-    message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123)
+    message(msg["content"], is_user=msg["role"] == "user", avatar_style="avataaars" if msg["role"] == "user" else "bottts", seed=123,key=get_key())
 
 if prompt := st.chat_input():
     if not groq_api_key:
         st.info("Please add your Groq Cloud API key to continue.")
         st.stop()
     
+
     st.session_state.messages.append({"role": "user", "content": prompt})
     message(prompt, is_user=True, avatar_style="avataaars", seed=123)
     client = Groq(api_key=groq_api_key)
@@ -65,3 +66,5 @@ if prompt := st.chat_input():
     msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
     message(msg, is_user=False, avatar_style="bottts", seed=123)
+
+
