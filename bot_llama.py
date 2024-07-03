@@ -46,7 +46,7 @@ if "messages" not in st.session_state:
 
 message("SAP's Mental Health Chatbot is here to help you. How can I assist you today?", is_user=False, avatar_style="bottts", seed=123)
 
-for count, msg in enumerate(st.session_state.messages[1:], start=1):
+for count, msg in enumerate(st.session_state.messages, start=1):
     role = msg["role"]
     key = f"{role}_message_{count}"
     avatar_style = "avataaars" if role == "user" else "bottts"
